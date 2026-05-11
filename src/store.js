@@ -2,14 +2,14 @@ import { create } from "zustand";
 
 export const useStore = create((set) => ({
   selectedStyle: "streetwear",
-  image: "",
+  images: [],
   favorites: [],
   loading: false,
   error: null,
 
   setStyle: (style) => set({ selectedStyle: style }),
 
-  setImage: (img) => set({ image: img }),
+  setImages: (imgs) => set({ images: imgs }),
 
   addFavorite: (img) =>
     set((state) => ({

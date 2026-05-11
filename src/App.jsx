@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import axios from "axios";
 import { useStore } from "./store";
+import { motion } from "framer-motion";
 
 const styles = ["streetwear", "minimal", "vintage", "y2k", "formal"];
 
@@ -24,10 +25,21 @@ export default function App() {
         `https://api.unsplash.com/search/photos`,
         {
           params: {
-            query: `${style} fashion outfit`,
-            per_page: 8,
+            query:
+              style === "streetwear"
+                ? "modern streetwear outfit fashion"
+                : style === "minimal"
+                ? "minimal luxury fashion"
+                : style === "vintage"
+                ? "retro fashion editorial"
+                : style === "y2k"
+                ? "modern y2k cyber fashion"
+                : "runway luxury formalwear editorial",
+
+            per_page: 12,
+            orientation: "portrait",
           },
-          headers: {
+            headers: {
             Authorization:
               "Client-ID RkFIOGlnF-KQH34uLyzgNd5Tyw-5qiub2OrA0Gdw4pM",
           },
@@ -79,9 +91,29 @@ export default function App() {
         </p>
 
         <h1 className="text-6xl md:text-7xl font-black tracking-tight">
-          Discover Your
-          <span className="text-zinc-400"> Aesthetic</span>
-        </h1>
+  Discover Your{" "}
+  
+  <span className="inline-flex">
+    {"Aesthetic".split("").map((letter, i) => (
+      <motion.span
+        key={i}
+        animate={{
+          rotate: [0, -3, 3, -2, 2, 0],
+          y: [0, -2, 0],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          delay: i * 0.08,
+          ease: "easeInOut",
+        }}
+        className="inline-block text-zinc-400"
+      >
+        {letter}
+      </motion.span>
+    ))}
+  </span>
+</h1>
 
         <p className="text-zinc-500 mt-4 max-w-xl mx-auto">
           Browse curated outfit inspiration from different fashion aesthetics
@@ -124,32 +156,53 @@ export default function App() {
         {images.length} looks found for "{selectedStyle}"
       </p>
 
-      {/* IMAGE FEED */}
-      <div className="flex flex-wrap justify-center gap-8 max-w-7xl mx-auto">
-        {images.map((img, i) => (
-          <div
-            key={i}
-            className="relative group w-[300px] h-[420px] rounded-[2rem] overflow-hidden border border-zinc-800 bg-zinc-900 transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_20px_60px_rgba(255,255,255,0.15)]"
-          >
-            <img
-              src={img}
-              alt="fashion"
-              className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
-            />
+{/* IMAGE FEED */}
+<motion.div
+  key={selectedStyle}
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 0.4 }}
+  className="flex flex-wrap justify-center gap-8 max-w-7xl mx-auto"
+>
+  {images.map((img, i) => (
+    <motion.div
+      key={i}
+      initial={{
+        opacity: 0,
+        y: 80,
+        scale: 0.8,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+      }}
+      transition={{
+        duration: 0.8,
+        delay: i * 0.05,
+        type: "spring",
+      }}
+      className="relative group w-[300px] h-[420px] rounded-[2rem] overflow-hidden border border-zinc-800 bg-zinc-900 transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_20px_60px_rgba(255,255,255,0.15)]"
+    >
+      <img
+        src={img}
+        alt="fashion"
+        className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+      />
 
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-            {/* Save Button */}
-            <button
-              onClick={() => addFavorite(img)}
-              className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-black px-5 py-2 rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:scale-105"
-            >
-              Save Fit
-            </button>
-          </div>
-        ))}
-      </div>
+      {/* Save Button */}
+      <button
+        onClick={() => addFavorite(img)}
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-black px-5 py-2 rounded-full opacity-90 md:opacity-0 md:group-hover:opacity-100 transition duration-300 hover:scale-105"
+      >
+        Save Fit
+      </button>
+    </motion.div>
+  ))}
+</motion.div>
 
       {/* FAVORITES */}
       <div className="mt-20 max-w-7xl mx-auto">
